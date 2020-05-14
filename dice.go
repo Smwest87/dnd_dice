@@ -10,7 +10,7 @@ func RollDie(n int) int {
 	rand.Seed(time.Now().UnixNano())
 	min := 1
 	max := n
-	result := rand.Intn(max-1) + min
+	result := rand.Intn(max-min) + min
 	return result
 }
 
