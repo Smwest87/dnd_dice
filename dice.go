@@ -6,7 +6,9 @@ import (
 	"time"
 )
 
+//RollDie -- need to find a way to randomize independent of time
 func RollDie(n int) int {
+	time.Sleep(5)
 	rand.Seed(time.Now().UnixNano())
 	min := 1
 	max := n
@@ -28,36 +30,3 @@ func RollStat() int {
 
 	return total
 }
-
-/*func main() {
-	dieCount, countErr := strconv.Atoi(os.Args[1])
-	if countErr != nil {
-		fmt.Println("Please provide two command line arguments, the first being the number of dice to being rolled. The second being the size of the die")
-		os.Exit(1)
-	}
-	dieSize, err := strconv.Atoi(os.Args[2])
-	if err != nil {
-		fmt.Println("Please supply a second command line argument in the form of an int")
-		os.Exit(1)
-	}
-
-	rollCount := 0
-	rollTotal := 0
-
-	for rollCount < dieCount {
-		rollTotal += rollDie(dieSize)
-		rollCount++
-	}
-
-	fmt.Printf("Total Roll = %v\n", rollTotal)
-	fmt.Println("-------------------------")
-	fmt.Printf("Strength = %v\n", RollStat())
-	fmt.Printf("Dexterity = %v\n", RollStat())
-	fmt.Printf("Constitution = %v\n", RollStat())
-	fmt.Printf("Wisdom = %v\n", RollStat())
-	fmt.Printf("Intelligence = %v\n", RollStat())
-	fmt.Printf("Charisma = %v\n", RollStat())
-	fmt.Println("-------------------------")
-
-}
-*/
