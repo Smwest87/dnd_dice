@@ -9,10 +9,14 @@ import (
 //RollDie -- need to find a way to randomize independent of time
 func RollDie(n int) int {
 	time.Sleep(5)
-	rand.Seed(time.Now().UnixNano())
+	randomSeed := rand.NewSource(time.Now().UnixNano())
+	randomNumberGenerator := rand.New(randomSeed)
 	min := 1
 	max := n
-	result := rand.Intn(max-min) + min
+	if n == 1 {
+		return n
+	}
+	result := randomNumberGenerator.Intn(max-min) + min
 	return result
 }
 
