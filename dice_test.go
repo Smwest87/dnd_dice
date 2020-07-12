@@ -19,11 +19,20 @@ func TestRollDie(t *testing.T) {
 		assert.Less(tt, *result, 21)
 
 	})
+
 	t.Run("n := 1 ", func(tt *testing.T) {
 		n := 1
 		result, err := RollDie(n)
 		assert.Nil(tt, err)
 		assert.Equal(tt, 1, *result)
+	})
+
+	t.Run("Failure, n < 1", func(tt *testing.T) {
+		n := 0
+		expectedErrorMessage := "Die size cannot be 0 or negative"
+		result, err := RollDie(n)
+		assert.Nil(tt, result)
+		assert.Equal(tt, expectedErrorMessage, err.Error())
 	})
 }
 
