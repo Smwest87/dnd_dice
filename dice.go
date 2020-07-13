@@ -1,4 +1,4 @@
-package Dice
+package dice
 
 import (
 	"errors"
@@ -7,42 +7,52 @@ import (
 	"time"
 )
 
+type Roller struct {
+}
+
+type mockRoller interface {
+	RollDie()
+	RollStat()
+}
+
+func NewRoller() *Roller {
+	roller := Roller{}
+	return &roller
+}
+
 //RollDie -- need to find a way to randomize independent of time
-func RollDie(n int) (*int, error) {
-	if n < 1 {
+func (r *Roller) RollDie(size int, rng *rand.Rand) (int, error) {
+	if size < 1 {
 		err := errors.New("Die size cannot be 0 or negative")
-		return nil, err
+		return -1, err
 	}
-	time.Sleep(100 * time.Millisecond)
-	randomSeed := rand.NewSource(time.Now().UnixNano())
-	randomNumberGenerator := rand.New(randomSeed)
-	max := n + 1
-	if n == 1 {
-		return &n, nil
+
+	if size == 1 {
+		return 1, nil
 	}
-	result := randomNumberGenerator.Intn(max)
-	if result == 0 {
-		result = 1
-		return &result, nil
-	}
-	return &result, nil
+	result := rng.Intn(size) + 1
+
+	return result, nil
 }
 
 //RollStat -- rolls the stat for players. Roll 4d6 and drop the lowest value
-func RollStat() (*int, error) {
+func (r *Roller) RollStat() (int, error) {
 	var list []int
 	total := 0
 
+	rngSource := rand.NewSource(time.Now().UnixNano())
+	rng := rand.New(rngSource)
+
 	for i := 0; i < 4; i++ {
-		roll, err := RollDie(6)
+		roll, err := r.RollDie(6, rng)
 		if err != nil {
-			return nil, err
+			return -1, err
 		}
-		list = append(list, *roll)
+		list = append(list, roll)
 	}
 
 	sort.Ints(list)
 	total = list[1] + list[2] + list[3]
 
-	return &total, nil
+	return total, nil
 }
