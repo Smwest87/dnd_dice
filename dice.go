@@ -7,20 +7,27 @@ import (
 	"time"
 )
 
+//Roller -- RNG will be used to select the result of die rolls
 type Roller struct {
+	RNG *rand.Rand
 }
 
-type mockRoller interface {
-	RollDie()
+//MockRoller -- TODO -- how to initialize MockDiceRoller in tests?
+type MockRoller interface {
+	RollDie(int, *rand.Rand)
 	RollStat()
 }
 
+//NewRoller -- return new roller struct with a new random source
 func NewRoller() *Roller {
-	roller := Roller{}
-	return &roller
+	randomSeed := rand.NewSource(time.Now().UnixNano())
+	randomGenerator := rand.New(randomSeed)
+	return &Roller{
+		RNG: randomGenerator,
+	}
 }
 
-//RollDie -- need to find a way to randomize independent of time
+//RollDie -- roll single die based off of die size and rng seed
 func (r *Roller) RollDie(size int, rng *rand.Rand) (int, error) {
 	if size < 1 {
 		err := errors.New("Die size cannot be 0 or negative")
@@ -30,7 +37,7 @@ func (r *Roller) RollDie(size int, rng *rand.Rand) (int, error) {
 	if size == 1 {
 		return 1, nil
 	}
-	result := rng.Intn(size) + 1
+	result := r.RNG.Intn(size) + 1
 
 	return result, nil
 }
@@ -40,11 +47,8 @@ func (r *Roller) RollStat() (int, error) {
 	var list []int
 	total := 0
 
-	rngSource := rand.NewSource(time.Now().UnixNano())
-	rng := rand.New(rngSource)
-
 	for i := 0; i < 4; i++ {
-		roll, err := r.RollDie(6, rng)
+		roll, err := r.RollDie(6, r.RNG)
 		if err != nil {
 			return -1, err
 		}
